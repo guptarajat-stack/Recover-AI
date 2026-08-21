@@ -1,0 +1,42 @@
+{
+  "buckets": {
+    "insufficient_funds": {
+      "action": "wait_and_retry",
+      "max_attempts": 3,
+      "cool_off_hours": 24,
+      "dnd_compliance_required": false
+    },
+    "bank_decline": {
+      "action": "send_payment_link_with_alt_method",
+      "max_attempts": 1,
+      "cool_off_hours": 0,
+      "dnd_compliance_required": true
+    },
+    "abandoned_checkout": {
+      "action": "send_discounted_payment_link",
+      "max_attempts": 2,
+      "cool_off_hours": 2,
+      "max_discount_percentage": 10,
+      "dnd_compliance_required": true
+    },
+    "mandate_failure": {
+      "action": "notify_and_recreate_mandate",
+      "max_attempts": 1,
+      "cool_off_hours": 0,
+      "dnd_compliance_required": false
+    },
+    "overdue_invoice": {
+      "action": "promise_to_pay_tracker",
+      "max_attempts": 5,
+      "cool_off_hours": 48,
+      "dnd_compliance_required": false
+    }
+  },
+  "global_rules": {
+    "do_not_disturb_hours": {
+      "start": 21,
+      "end": 8,
+      "timezone": "Asia/Kolkata"
+    }
+  }
+}
