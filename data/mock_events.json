@@ -1,0 +1,1410 @@
+[
+  {
+    "event": "payment.failed",
+    "created_at": 1786716269,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_ecede86fee780c",
+          "entity": "payment",
+          "amount": 478312,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_fa19ae5e8d2bfe",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "Payment failed due to insufficient funds",
+          "email": "customer_291@example.com",
+          "contact": "+919876569701"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1786727069,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_ce7db32718af01",
+          "entity": "order",
+          "amount": 969179,
+          "amount_paid": 0,
+          "amount_due": 403472,
+          "currency": "INR",
+          "receipt": "receipt_3198",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1786741469,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_ac0da671ac5c57",
+          "entity": "order",
+          "amount": 536909,
+          "amount_paid": 0,
+          "amount_due": 896709,
+          "currency": "INR",
+          "receipt": "receipt_9280",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1786745069,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_3974bdc981628f",
+          "entity": "invoice",
+          "amount": 4548383,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_18@company.com",
+            "contact": "+919876533870"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1786781069,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_515bb024baa39d",
+          "entity": "order",
+          "amount": 297854,
+          "amount_paid": 0,
+          "amount_due": 903670,
+          "currency": "INR",
+          "receipt": "receipt_5757",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1786781069,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_b290593a8b3dde",
+          "entity": "invoice",
+          "amount": 4039907,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_96@company.com",
+            "contact": "+919876578414"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1786784669,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_5b193d4d13b6f1",
+          "entity": "invoice",
+          "amount": 964055,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_29@company.com",
+            "contact": "+919876568663"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1786806269,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_4343d8126fa8fb",
+          "entity": "order",
+          "amount": 732169,
+          "amount_paid": 0,
+          "amount_due": 770952,
+          "currency": "INR",
+          "receipt": "receipt_8541",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1786806269,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_2beb3147f447d1",
+          "entity": "invoice",
+          "amount": 671474,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_14@company.com",
+            "contact": "+919876578556"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1786813469,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_dc4d5b412d6ec9",
+          "entity": "order",
+          "amount": 604585,
+          "amount_paid": 0,
+          "amount_due": 509551,
+          "currency": "INR",
+          "receipt": "receipt_5090",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1786820669,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_b9708382052873",
+          "entity": "payment",
+          "amount": 438516,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_eacb5b2a1aa6f1",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "Card is expired",
+          "email": "customer_692@example.com",
+          "contact": "+919876580580"
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1786827869,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_183f326ca54896",
+          "entity": "payment",
+          "amount": 340515,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_2992ce879c4c1f",
+          "error_code": "GATEWAY_ERROR",
+          "error_description": "Payment declined by the issuing bank",
+          "email": "customer_602@example.com",
+          "contact": "+919876579475"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1786831469,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_2aac959ae2c57e",
+          "entity": "order",
+          "amount": 991474,
+          "amount_paid": 0,
+          "amount_due": 256492,
+          "currency": "INR",
+          "receipt": "receipt_9597",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1786831469,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_b5352139e65c9f",
+          "entity": "invoice",
+          "amount": 3718688,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_23@company.com",
+            "contact": "+919876589505"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1786838669,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_d35469d730b9d9",
+          "entity": "subscription",
+          "plan_id": "plan_ab129e0d8dac34",
+          "status": "halted",
+          "customer_id": "cust_903715fc2645cd",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1786853069,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_2a6270ac171363",
+          "entity": "payment",
+          "amount": 304334,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_5c675eccd74d37",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "OTP drop-off or cancelled by user",
+          "email": "customer_474@example.com",
+          "contact": "+919876586917"
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1786853069,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_5847a314c482d1",
+          "entity": "invoice",
+          "amount": 3338174,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_54@company.com",
+            "contact": "+919876553497"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1786853069,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_3952072073622d",
+          "entity": "subscription",
+          "plan_id": "plan_539e7e9d05ce59",
+          "status": "halted",
+          "customer_id": "cust_22e1097c976a23",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1786863869,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_299976d2712016",
+          "entity": "subscription",
+          "plan_id": "plan_003e12f9fa0e7b",
+          "status": "halted",
+          "customer_id": "cust_e37a4d4ce3f1fe",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1786867469,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_bf5fedd221d579",
+          "entity": "payment",
+          "amount": 87967,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_8b46bd86d73b05",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "OTP drop-off or cancelled by user",
+          "email": "customer_658@example.com",
+          "contact": "+919876522938"
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1786878269,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_c91e468224dc95",
+          "entity": "payment",
+          "amount": 251350,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_537a0a5759c6e8",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "OTP drop-off or cancelled by user",
+          "email": "customer_667@example.com",
+          "contact": "+919876519500"
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1786885469,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_e3ceab9b2e29b4",
+          "entity": "payment",
+          "amount": 99312,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_48e639adf710e9",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "Payment failed due to insufficient funds",
+          "email": "customer_405@example.com",
+          "contact": "+919876577835"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1786889069,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_ea2a5c013f58ff",
+          "entity": "order",
+          "amount": 408169,
+          "amount_paid": 0,
+          "amount_due": 455758,
+          "currency": "INR",
+          "receipt": "receipt_1604",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1786896269,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_9ff8f152dfbfcd",
+          "entity": "payment",
+          "amount": 354190,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_c04ab08db916a0",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "Card is expired",
+          "email": "customer_12@example.com",
+          "contact": "+919876524596"
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1786910669,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_00c8dcdec63b2c",
+          "entity": "invoice",
+          "amount": 2046334,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_97@company.com",
+            "contact": "+919876563029"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1786910669,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_3fb776b29bd4b2",
+          "entity": "payment",
+          "amount": 294606,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_8cf61a19b37bf8",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "Payment failed due to insufficient funds",
+          "email": "customer_699@example.com",
+          "contact": "+919876585214"
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1786914269,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_1bea70f71319ed",
+          "entity": "subscription",
+          "plan_id": "plan_63757157bf2c49",
+          "status": "halted",
+          "customer_id": "cust_2ce4042576df80",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1786943069,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_5ad926e831dd2d",
+          "entity": "subscription",
+          "plan_id": "plan_b9289100313582",
+          "status": "halted",
+          "customer_id": "cust_a3632086ac4e18",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1786943069,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_3621aef81f7f5e",
+          "entity": "invoice",
+          "amount": 1987191,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_63@company.com",
+            "contact": "+919876520182"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1786964669,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_56e071a7226020",
+          "entity": "subscription",
+          "plan_id": "plan_f2295bd7f664dd",
+          "status": "halted",
+          "customer_id": "cust_58d665cb23bb07",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1786997069,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_c2cc7e71f5147f",
+          "entity": "subscription",
+          "plan_id": "plan_161fa3acd9f126",
+          "status": "halted",
+          "customer_id": "cust_29f3539a098557",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787000669,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_2cf79292a8db55",
+          "entity": "payment",
+          "amount": 383574,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_da722fbd600468",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "OTP drop-off or cancelled by user",
+          "email": "customer_795@example.com",
+          "contact": "+919876519028"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787007869,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_f105255f3ccb67",
+          "entity": "order",
+          "amount": 830613,
+          "amount_paid": 0,
+          "amount_due": 507810,
+          "currency": "INR",
+          "receipt": "receipt_3062",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787011469,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_a2c95d54b0e80b",
+          "entity": "payment",
+          "amount": 487089,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_417d252969e98c",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "Payment failed due to insufficient funds",
+          "email": "customer_680@example.com",
+          "contact": "+919876533328"
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787018669,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_567f3f5ab0e8c6",
+          "entity": "subscription",
+          "plan_id": "plan_e9703a37c5c00e",
+          "status": "halted",
+          "customer_id": "cust_5d0c858c09bc7f",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787033069,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_3660ead2f1a8a7",
+          "entity": "payment",
+          "amount": 301619,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_49da3dfcc6343c",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "Payment failed due to insufficient funds",
+          "email": "customer_3@example.com",
+          "contact": "+919876553607"
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787036669,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_abbf7cdadca2bc",
+          "entity": "payment",
+          "amount": 166486,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_9fe38daa4958fb",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "OTP drop-off or cancelled by user",
+          "email": "customer_833@example.com",
+          "contact": "+919876561648"
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787043869,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_7bbe3ebf72c65c",
+          "entity": "payment",
+          "amount": 227645,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_0a8dacf4da1023",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "Card is expired",
+          "email": "customer_550@example.com",
+          "contact": "+919876522974"
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1787047469,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_ad7a3853eca77f",
+          "entity": "invoice",
+          "amount": 831156,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_53@company.com",
+            "contact": "+919876528942"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787047469,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_d3dde7ded30049",
+          "entity": "subscription",
+          "plan_id": "plan_95cb3f80b6ed19",
+          "status": "halted",
+          "customer_id": "cust_d460033c003ac1",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787051069,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_47eac726f4ed94",
+          "entity": "subscription",
+          "plan_id": "plan_0ae3fce84c7558",
+          "status": "halted",
+          "customer_id": "cust_7c6c7adb6da669",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787051069,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_bab30a5575867e",
+          "entity": "order",
+          "amount": 651749,
+          "amount_paid": 0,
+          "amount_due": 444403,
+          "currency": "INR",
+          "receipt": "receipt_1822",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787072669,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_8d899ab96306e1",
+          "entity": "order",
+          "amount": 225445,
+          "amount_paid": 0,
+          "amount_due": 119887,
+          "currency": "INR",
+          "receipt": "receipt_6646",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787094269,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_eff2cdd1cd1f38",
+          "entity": "order",
+          "amount": 115030,
+          "amount_paid": 0,
+          "amount_due": 457713,
+          "currency": "INR",
+          "receipt": "receipt_1110",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787101469,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_31cb50312b9828",
+          "entity": "subscription",
+          "plan_id": "plan_46589a459eefc9",
+          "status": "halted",
+          "customer_id": "cust_62dd3916caa299",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1787105069,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_767dbfa8e83bb9",
+          "entity": "invoice",
+          "amount": 4858160,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_80@company.com",
+            "contact": "+919876593720"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787108669,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_aa3f7582233e97",
+          "entity": "payment",
+          "amount": 276192,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_c353c74291e9f4",
+          "error_code": "GATEWAY_ERROR",
+          "error_description": "Payment declined by the issuing bank",
+          "email": "customer_39@example.com",
+          "contact": "+919876531923"
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787112269,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_6ab1eb4808f711",
+          "entity": "subscription",
+          "plan_id": "plan_559985251ebeb8",
+          "status": "halted",
+          "customer_id": "cust_2d7234576c1066",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787119469,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_d521d7ed62e4d7",
+          "entity": "order",
+          "amount": 571653,
+          "amount_paid": 0,
+          "amount_due": 906073,
+          "currency": "INR",
+          "receipt": "receipt_1094",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1787126669,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_897d682c5bfabf",
+          "entity": "invoice",
+          "amount": 4386533,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_68@company.com",
+            "contact": "+919876574628"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787130269,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_11f0c3a6c41756",
+          "entity": "payment",
+          "amount": 125474,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_f2487423c4d0c0",
+          "error_code": "GATEWAY_ERROR",
+          "error_description": "Payment declined by the issuing bank",
+          "email": "customer_953@example.com",
+          "contact": "+919876515490"
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787141069,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_006af3b4b42f85",
+          "entity": "subscription",
+          "plan_id": "plan_a2aef60975e990",
+          "status": "halted",
+          "customer_id": "cust_7eb74760790222",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787141069,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_d702a7f93ef60f",
+          "entity": "order",
+          "amount": 590796,
+          "amount_paid": 0,
+          "amount_due": 168571,
+          "currency": "INR",
+          "receipt": "receipt_3376",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787141069,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_2a8b95a6261774",
+          "entity": "subscription",
+          "plan_id": "plan_a5dbfdf022817d",
+          "status": "halted",
+          "customer_id": "cust_2adde10e6bce2e",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787144669,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_ae4761447c2937",
+          "entity": "subscription",
+          "plan_id": "plan_1c98bcde5a1e10",
+          "status": "halted",
+          "customer_id": "cust_88516374150114",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787155469,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_b9fabb2f75935d",
+          "entity": "order",
+          "amount": 996689,
+          "amount_paid": 0,
+          "amount_due": 987635,
+          "currency": "INR",
+          "receipt": "receipt_6800",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787159069,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_5972a07a665227",
+          "entity": "payment",
+          "amount": 457248,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_8d87b63e16894d",
+          "error_code": "GATEWAY_ERROR",
+          "error_description": "Payment declined by the issuing bank",
+          "email": "customer_130@example.com",
+          "contact": "+919876547170"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787166269,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_397fe4e94b4fcf",
+          "entity": "order",
+          "amount": 656055,
+          "amount_paid": 0,
+          "amount_due": 795708,
+          "currency": "INR",
+          "receipt": "receipt_3231",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787166269,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_8924201554eba2",
+          "entity": "order",
+          "amount": 333787,
+          "amount_paid": 0,
+          "amount_due": 127536,
+          "currency": "INR",
+          "receipt": "receipt_7444",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787169869,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_480a7d84245147",
+          "entity": "payment",
+          "amount": 357655,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_ba2ccdaab797a2",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "Payment failed due to insufficient funds",
+          "email": "customer_4@example.com",
+          "contact": "+919876595575"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787187869,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_680ecd82d0e6e7",
+          "entity": "order",
+          "amount": 447988,
+          "amount_paid": 0,
+          "amount_due": 438728,
+          "currency": "INR",
+          "receipt": "receipt_1859",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787187869,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_8672cfd995eee4",
+          "entity": "order",
+          "amount": 417702,
+          "amount_paid": 0,
+          "amount_due": 939898,
+          "currency": "INR",
+          "receipt": "receipt_1043",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787198669,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_a41f0af6e49e4d",
+          "entity": "subscription",
+          "plan_id": "plan_a63860829f3d5c",
+          "status": "halted",
+          "customer_id": "cust_ed5e21585078a4",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787202269,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_03c7b0a9affd25",
+          "entity": "order",
+          "amount": 515731,
+          "amount_paid": 0,
+          "amount_due": 717455,
+          "currency": "INR",
+          "receipt": "receipt_8892",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "order.created",
+    "created_at": 1787216669,
+    "payload": {
+      "order": {
+        "entity": {
+          "id": "order_b977d98e0bcf16",
+          "entity": "order",
+          "amount": 694403,
+          "amount_paid": 0,
+          "amount_due": 697439,
+          "currency": "INR",
+          "receipt": "receipt_1656",
+          "status": "created"
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787216669,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_e7fc3197a12586",
+          "entity": "payment",
+          "amount": 68254,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_8f93de62ab6a76",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "Card is expired",
+          "email": "customer_729@example.com",
+          "contact": "+919876540549"
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1787231069,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_024d3befe04ba9",
+          "entity": "invoice",
+          "amount": 4078324,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_24@company.com",
+            "contact": "+919876537150"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787238269,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_7c9ead2e52fc8b",
+          "entity": "payment",
+          "amount": 173476,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_c9911aa7033f33",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "Payment failed due to insufficient funds",
+          "email": "customer_437@example.com",
+          "contact": "+919876589873"
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787245469,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_12dc7c9ab4865e",
+          "entity": "subscription",
+          "plan_id": "plan_65a64741bc70c7",
+          "status": "halted",
+          "customer_id": "cust_a427a562fe31ee",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1787245469,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_5f54ba918a8373",
+          "entity": "invoice",
+          "amount": 4881502,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_56@company.com",
+            "contact": "+919876598921"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "invoice.overdue",
+    "created_at": 1787256269,
+    "payload": {
+      "invoice": {
+        "entity": {
+          "id": "inv_c1a8a5cf852aca",
+          "entity": "invoice",
+          "amount": 3277719,
+          "currency": "INR",
+          "status": "overdue",
+          "customer_details": {
+            "email": "b2b_45@company.com",
+            "contact": "+919876545921"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787281469,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_9a371c6d139a73",
+          "entity": "payment",
+          "amount": 231511,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_c402d77237be89",
+          "error_code": "GATEWAY_ERROR",
+          "error_description": "Payment declined by the issuing bank",
+          "email": "customer_107@example.com",
+          "contact": "+919876564796"
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787288669,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_6eadb6cc4b9933",
+          "entity": "subscription",
+          "plan_id": "plan_756b75f688368f",
+          "status": "halted",
+          "customer_id": "cust_5e1b403fcbdfe7",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  },
+  {
+    "event": "payment.failed",
+    "created_at": 1787303069,
+    "payload": {
+      "payment": {
+        "entity": {
+          "id": "pay_2ec197a8f3d54e",
+          "entity": "payment",
+          "amount": 220838,
+          "currency": "INR",
+          "status": "failed",
+          "order_id": "order_0d70ba20668481",
+          "error_code": "BAD_REQUEST_ERROR",
+          "error_description": "OTP drop-off or cancelled by user",
+          "email": "customer_426@example.com",
+          "contact": "+919876572529"
+        }
+      }
+    }
+  },
+  {
+    "event": "subscription.halted",
+    "created_at": 1787303069,
+    "payload": {
+      "subscription": {
+        "entity": {
+          "id": "sub_8c85f1b0fb276c",
+          "entity": "subscription",
+          "plan_id": "plan_4bb3fa358ada3f",
+          "status": "halted",
+          "customer_id": "cust_6d0e437ab10772",
+          "notes": {
+            "error_description": "Mandate execution failed due to insufficient balance"
+          }
+        }
+      }
+    }
+  }
+]
