@@ -25,4 +25,7 @@ Most failed-payment bots retry blindly. RecoverAI diagnoses **why** revenue is a
 ## Setup Instructions
 1. Run `razorpay-mcp-server` locally.
 2. Provide your Razorpay Test Mode API keys in `.env`.
-3. (More instructions to follow as modules are built...)
+3. Start the Webhook Listener: `node src/server.js`
+
+## Project Updates
+- [Webhook Listener & Database Setup Summary](./docs/Webhook_Listener_Summary.pdf)

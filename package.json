@@ -1,0 +1,33 @@
+{
+  "name": "recover-ai",
+  "version": "1.0.0",
+  "description": "Most failed-payment bots retry blindly. RecoverAI diagnoses **why** revenue is at risk (insufficient funds, expired mandate, checkout abandonment, overdue B2B invoice) before choosing a bounded, compliant recovery action — then proves it with a measured recovery report and a full audit trail across a test-mode transaction batch.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/guptarajat-stack/Recover-AI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/guptarajat-stack/Recover-AI/issues"
+  },
+  "homepage": "https://github.com/guptarajat-stack/Recover-AI#readme",
+  "dependencies": {
+    "body-parser": "^2.3.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "md-to-pdf": "^5.2.5",
+    "sqlite3": "^6.0.1",
+    "uuid": "^14.0.2"
+  }
+}
