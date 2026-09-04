@@ -1,6 +1,7 @@
 require('dotenv').config();
 const db = require('./db');
 const Razorpay = require('razorpay');
+const stoppingRules = require('../config/stopping_rules.json');
 
 const razorpay = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID || 'dummy_key',
@@ -10,6 +11,7 @@ const razorpay = new Razorpay({
 async function executeAction(caseData) {
     const action = caseData.intervention_type;
     const amount = caseData.revenue_at_risk;
+    const bucket = caseData.root_cause_bucket;
     const now = Math.floor(Date.now() / 1000);
 
     let result = { success: false, log: '' };
@@ -21,40 +23,63 @@ async function executeAction(caseData) {
             let description = 'Payment Recovery Link';
             
             if (action === 'send_discounted_payment_link') {
-                finalAmount = Math.floor(amount * 0.9); // 10% discount
-                description = 'Special 10% Discount - Complete your checkout';
+                const bucketRule = stoppingRules.buckets[bucket];
+                const discountPercent = (bucketRule && bucketRule.max_discount_percentage) ? bucketRule.max_discount_percentage : 10;
+                finalAmount = Math.floor(amount * (1 - (discountPercent / 100)));
+                description = `Special ${discountPercent}% Discount - Complete your checkout`;
             }
 
-            // In test mode, we might not have a real customer to send to, so we use dummy info 
-            // but we call the real Razorpay API to generate the link.
+            // Real Razorpay API call
             const paymentLink = await razorpay.paymentLink.create({
                 amount: finalAmount,
                 currency: 'INR',
                 accept_partial: false,
                 description: description,
+                reference_id: `case_${caseData.id}_${now}`, // For basic idempotency trailing
                 customer: {
                     name: 'Valued Customer',
                     email: 'test_recovery@example.com',
                     contact: '+919999999999'
                 },
                 notify: {
-                    sms: false, // We will simulate notification sandbox
+                    sms: false,
                     email: false
                 },
                 reminder_enable: false,
-                expire_by: now + (24 * 60 * 60) // Expires in 24 hours
+                expire_by: now + (24 * 60 * 60)
             });
 
             result.success = true;
             result.log = `Created Payment Link: ${paymentLink.short_url} (Amount: ${finalAmount/100} INR). Sent via Sandbox.`;
 
         } else if (action === 'notify_and_recreate_mandate') {
+            // Mandate recreation is difficult to test cleanly in Razorpay test mode without active auth tokens.
+            // Keeping this simulated as per plan but logging explicitly.
             result.success = true;
-            result.log = `Simulated mandate recreation email sent to customer.`;
+            result.log = `[SIMULATED] Mandate recreation email sent to customer. (Razorpay mandate APIs require active auth tokens).`;
 
         } else if (action === 'promise_to_pay_tracker') {
+            // Wire to real Razorpay payment link representing the invoice reminder
+            const invoiceLink = await razorpay.paymentLink.create({
+                amount: amount,
+                currency: 'INR',
+                accept_partial: true,
+                description: 'Invoice Reminder - Promise to Pay Tracker',
+                reference_id: `inv_case_${caseData.id}_${now}`,
+                customer: {
+                    name: 'B2B Client',
+                    email: 'finance@example-b2b.com',
+                    contact: '+918888888888'
+                },
+                notify: {
+                    sms: false,
+                    email: false
+                },
+                reminder_enable: true,
+                expire_by: now + (7 * 24 * 60 * 60) // Expires in 7 days
+            });
             result.success = true;
-            result.log = `B2B Invoice added to Promise-to-Pay tracker. Reminder email sent.`;
+            result.log = `Added to Promise-to-Pay tracker. Real Invoice Reminder Link Created: ${invoiceLink.short_url}.`;
             
         } else if (action === 'wait_and_retry') {
             result.success = true;
@@ -91,6 +116,19 @@ async function processExecutions() {
         let processedCount = 0;
 
         for (const row of rows) {
+            // Idempotency check: ensure we don't execute if already taken (guards against race conditions)
+            const currentStatus = await new Promise((resolve, reject) => {
+                db.get(`SELECT status FROM recovery_cases WHERE id = ?`, [row.id], (err, res) => {
+                    if (err) resolve(row.status);
+                    else resolve(res ? res.status : row.status);
+                });
+            });
+
+            if (currentStatus === 'action_taken' || currentStatus === 'recovered') {
+                console.log(`Skipping case ${row.id}: action already taken.`);
+                continue;
+            }
+
             console.log(`Processing case ${row.id} -> Action: ${row.intervention_type}`);
             const executionResult = await executeAction(row);
             

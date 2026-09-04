@@ -8,6 +8,8 @@
     "test": "tests"
   },
   "scripts": {
+    "dev": "node src/server.js",
+    "simulate": "node src/generate_test_data.js && node src/seed_db.js && node src/classifier.js && node src/policy_engine.js && node src/executor.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

@@ -9,6 +9,11 @@ app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 3000;
 
+// Basic route for browser health check
+app.get('/', (req, res) => {
+    res.send('<h2>RecoverAI Webhook Listener is Running!</h2><p>Send POST requests to <code>/webhook</code> to ingest events.</p>');
+});
+
 app.post('/webhook', (req, res) => {
     const payload = req.body;
     const eventType = payload.event;
