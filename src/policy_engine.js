@@ -126,8 +126,58 @@ async function processPolicyEvaluations() {
     console.log(`✅ Successfully evaluated policy for ${processedCount} cases.`);
 }
 
+async function processSinglePolicy(caseId) {
+    const { data: row, error: fetchErr } = await db.from('recovery_cases').select('*').eq('id', caseId).single();
+
+    if (fetchErr || !row) {
+        console.error(`Error fetching case ${caseId}:`, fetchErr?.message || 'Not found');
+        return null;
+    }
+
+    if (row.status !== 'diagnosed') {
+        console.log(`Case ${caseId} is not in diagnosed state.`);
+        return null;
+    }
+
+    const decision = evaluatePolicy(row);
+    const now = new Date().toISOString();
+    const nowSec = Math.floor(Date.now() / 1000);
+    
+    let auditTrail = [];
+    try {
+        auditTrail = typeof row.audit_trail === 'string' ? JSON.parse(row.audit_trail) : (row.audit_trail || []);
+    } catch (e) { }
+
+    auditTrail.push({
+        timestamp: nowSec,
+        action: 'policy_evaluated',
+        details: `Decision: ${decision.action}. Reason: ${decision.reason}`
+    });
+
+    let newStatus = 'decided'; 
+    if (decision.action === 'stop' || decision.action === 'manual_review') {
+        newStatus = decision.action === 'stop' ? 'failed_to_recover' : 'requires_manual_review';
+    } else if (decision.action === 'wait') {
+        newStatus = 'diagnosed';
+    }
+
+    const updateData = {
+        intervention_type: decision.action,
+        status: newStatus,
+        audit_trail: auditTrail,
+        updated_at: now
+    };
+
+    await db.from('recovery_cases')
+            .update(updateData)
+            .eq('id', caseId);
+
+    console.log(`✅ Successfully evaluated policy for single case ${caseId}`);
+    return decision;
+}
+
 if (require.main === module) {
     processPolicyEvaluations();
 }
 
-module.exports = { evaluatePolicy, processPolicyEvaluations };
+module.exports = { evaluatePolicy, processPolicyEvaluations, processSinglePolicy };

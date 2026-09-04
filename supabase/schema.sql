@@ -94,3 +94,26 @@ ALTER TABLE events ENABLE ROW LEVEL SECURITY;
 ALTER TABLE recovery_cases ENABLE ROW LEVEL SECURITY;
 ALTER TABLE actions ENABLE ROW LEVEL SECURITY;
 -- service_role: full access; anon: read-only on cases/actions for dashboard
+
+-- Phase 3: Postgres Webhook Trigger
+-- This calls out to either the Edge Function or the Node backend directly via pg_net
+CREATE EXTENSION IF NOT EXISTS pg_net;
+
+CREATE OR REPLACE FUNCTION public.handle_new_event() 
+RETURNS TRIGGER AS $$
+BEGIN
+  PERFORM net.http_post(
+      -- Defaulting to the local Node backend for local testing, 
+      -- but in production this can be the Edge Function URL.
+      url := COALESCE(current_setting('app.settings.webhook_url', true), 'http://host.docker.internal:3000/internal/process-event'),
+      headers := '{"Content-Type": "application/json"}',
+      body := json_build_object('type', 'INSERT', 'record', row_to_json(NEW))::text
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS on_event_created ON public.events;
+CREATE TRIGGER on_event_created
+  AFTER INSERT ON public.events
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_event();

@@ -107,6 +107,38 @@ app.post('/webhook', (req, res) => {
     }
 });
 
+const { processSingleEvent } = require('./classifier');
+const { processSinglePolicy } = require('./policy_engine');
+const { processSingleExecution } = require('./executor');
+
+app.post('/internal/process-event', async (req, res) => {
+    // Handle both Edge Function { event_id } format and direct Trigger { record: { id } } format
+    const event_id = req.body.event_id || req.body.record?.id;
+    
+    if (!event_id) {
+        return res.status(400).json({ status: 'error', message: 'Missing event_id or record.id' });
+    }
+
+    try {
+        console.log(`[Event-Driven Core] Processing event ${event_id}`);
+        const caseId = await processSingleEvent(event_id);
+        
+        if (!caseId) {
+            return res.status(200).json({ status: 'ignored', message: 'Event already processed or not found' });
+        }
+
+        const decision = await processSinglePolicy(caseId);
+        if (decision && decision.action !== 'wait' && decision.action !== 'stop' && decision.action !== 'manual_review') {
+            await processSingleExecution(caseId);
+        }
+
+        res.status(200).json({ status: 'ok', case_id: caseId });
+    } catch (err) {
+        console.error(`[Event-Driven Core] Error processing event ${event_id}:`, err);
+        res.status(500).json({ status: 'error', message: 'Internal processing error' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`🚀 Webhook Listener running on http://localhost:${PORT}`);
 });

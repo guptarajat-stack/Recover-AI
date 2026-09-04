@@ -160,8 +160,58 @@ async function processExecutions() {
     console.log(`✅ Successfully executed actions for ${processedCount} cases.`);
 }
 
+async function processSingleExecution(caseId) {
+    const { data: row, error: fetchErr } = await db.from('recovery_cases').select('*').eq('id', caseId).single();
+    
+    if (fetchErr || !row) {
+        console.error(`Error fetching case ${caseId}:`, fetchErr?.message || 'Not found');
+        return null;
+    }
+
+    if (row.status === 'executed' || row.status === 'recovered') {
+        console.log(`Skipping case ${row.id}: action already taken.`);
+        return null;
+    }
+
+    if (row.status !== 'decided') {
+        console.log(`Skipping case ${row.id}: not in decided state.`);
+        return null;
+    }
+
+    console.log(`Processing single case ${row.id} -> Action: ${row.intervention_type}`);
+    const executionResult = await executeAction(row);
+    
+    const now = new Date().toISOString();
+    const nowSec = Math.floor(Date.now() / 1000);
+    
+    let auditTrail = [];
+    try {
+        auditTrail = typeof row.audit_trail === 'string' ? JSON.parse(row.audit_trail) : (row.audit_trail || []);
+    } catch (e) {}
+
+    auditTrail.push({
+        timestamp: nowSec,
+        action: 'intervention_executed',
+        details: executionResult.log
+    });
+
+    const newStatus = executionResult.success ? 'executed' : 'failed_to_recover';
+    const newAttempts = row.attempts + 1;
+
+    // Update database
+    await db.from('recovery_cases').update({
+        status: newStatus,
+        audit_trail: auditTrail,
+        updated_at: now,
+        attempts: newAttempts
+    }).eq('id', row.id);
+
+    console.log(`✅ Successfully executed action for single case ${row.id}`);
+    return executionResult;
+}
+
 if (require.main === module) {
     processExecutions();
 }
 
-module.exports = { executeAction, processExecutions };
+module.exports = { executeAction, processExecutions, processSingleExecution };

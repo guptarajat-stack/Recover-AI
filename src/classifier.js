@@ -109,9 +109,63 @@ async function processPendingEvents() {
     console.log(`✅ Successfully classified and created recovery cases for ${caseRows.length} events.`);
 }
 
+async function processSingleEvent(eventId) {
+    const { data: event, error: fetchErr } = await db.from('events').select('*').eq('id', eventId).single();
+    
+    if (fetchErr || !event) {
+        console.error(`Error fetching event ${eventId}:`, fetchErr?.message || 'Not found');
+        return null;
+    }
+
+    if (event.processed) {
+        console.log(`Event ${eventId} already processed.`);
+        return null; // or fetch existing case id if needed, but for simplicity return null
+    }
+
+    const classification = classifyEvent(event);
+    const caseId = uuidv4();
+    const now = new Date().toISOString();
+    
+    const auditLog = [
+        { 
+            timestamp: Math.floor(Date.now() / 1000), 
+            action: 'event_ingested', 
+            details: `Event ${event.event_type} received` 
+        },
+        { 
+            timestamp: Math.floor(Date.now() / 1000), 
+            action: 'root_cause_classified', 
+            details: `Classified as ${classification.bucket} with ${Math.round(classification.confidence * 100)}% confidence` 
+        }
+    ];
+
+    const caseData = {
+        id: caseId,
+        event_id: event.id,
+        root_cause_bucket: classification.bucket,
+        status: 'diagnosed',
+        revenue_at_risk: event.amount,
+        classification_confidence: classification.confidence,
+        audit_trail: auditLog,
+        created_at: now,
+        updated_at: now
+    };
+
+    const { error: insertErr } = await db.from('recovery_cases').insert([caseData]);
+    if (insertErr) {
+        console.error("Error creating recovery case:", insertErr.message);
+        return null;
+    }
+
+    await db.from('events').update({ processed: true }).eq('id', event.id);
+    
+    console.log(`✅ Successfully classified single event ${eventId} -> case ${caseId}`);
+    return caseId;
+}
+
 // If run directly, execute the classifier once
 if (require.main === module) {
     processPendingEvents();
 }
 
-module.exports = { classifyEvent, processPendingEvents };
+module.exports = { classifyEvent, processPendingEvents, processSingleEvent };
