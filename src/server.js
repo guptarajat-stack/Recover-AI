@@ -33,7 +33,7 @@ app.post('/webhook', (req, res) => {
     try {
         const id = uuidv4();
         let entityId, amount, currency, customerId, customerContact, errorCode, errorDesc;
-        const createdAt = payload.created_at || Math.floor(Date.now() / 1000);
+        const createdAtISO = payload.created_at ? new Date(payload.created_at * 1000).toISOString() : new Date().toISOString();
         let razorpayEventId = null; // Sometimes test payloads don't have this wrapper
 
         if (eventType === 'payment.failed') {
@@ -78,24 +78,28 @@ app.post('/webhook', (req, res) => {
             errorDesc = 'Invoice is overdue';
         }
 
-        const insertQuery = `
-            INSERT INTO events (
-                id, razorpay_event_id, event_type, entity_id, amount, currency, 
-                customer_id, customer_contact, error_code, error_description, created_at
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `;
+        const { error } = await db.from('events').insert([{
+            id,
+            razorpay_event_id: razorpayEventId,
+            event_type: eventType,
+            entity_id: entityId,
+            amount: amount,
+            currency: currency,
+            customer_id: customerId,
+            customer_contact: customerContact,
+            error_code: errorCode,
+            error_description: errorDesc,
+            raw_payload: payload,
+            created_at: createdAtISO
+        }]);
 
-        db.run(insertQuery, [
-            id, razorpayEventId, eventType, entityId, amount, currency,
-            customerId, customerContact, errorCode, errorDesc, createdAt
-        ], function(err) {
-            if (err) {
-                console.error("Failed to insert event:", err.message);
-                return res.status(500).json({ status: 'error', message: 'Database error' });
-            }
-            console.log(`📥 Ingested ${eventType} for entity ${entityId}`);
-            res.status(200).json({ status: 'ok', id: id });
-        });
+        if (error) {
+            console.error("Failed to insert event:", error.message);
+            return res.status(500).json({ status: 'error', message: 'Database error' });
+        }
+        
+        console.log(`📥 Ingested ${eventType} for entity ${entityId}`);
+        res.status(200).json({ status: 'ok', id: id });
 
     } catch (err) {
         console.error("Error processing webhook payload:", err);

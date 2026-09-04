@@ -39,7 +39,7 @@ function evaluatePolicy(caseData) {
 
     // Checking cool-off period
     const now = Math.floor(Date.now() / 1000);
-    const lastUpdate = caseData.updated_at;
+    const lastUpdate = new Date(caseData.updated_at).getTime() / 1000;
     const hoursSinceLastUpdate = (now - lastUpdate) / 3600;
 
     if (caseData.attempts > 0 && hoursSinceLastUpdate < rule.cool_off_hours) {
@@ -53,85 +53,81 @@ function evaluatePolicy(caseData) {
     return { action: rule.action, reason: 'Policy conditions met' };
 }
 
-function processPolicyEvaluations() {
+async function processPolicyEvaluations() {
     console.log("🛡️ Running Policy Engine on pending recovery cases...");
 
-    db.all(`SELECT * FROM recovery_cases WHERE status = 'pending_policy_evaluation'`, [], (err, rows) => {
-        if (err) {
-            console.error("Error fetching cases:", err.message);
-            return;
+    const { data: rows, error: fetchErr } = await db.from('recovery_cases').select('*').eq('status', 'diagnosed');
+
+    if (fetchErr) {
+        console.error("Error fetching cases:", fetchErr.message);
+        return;
+    }
+
+    if (!rows || rows.length === 0) {
+        console.log("No pending cases require policy evaluation.");
+        return;
+    }
+
+    console.log(`Found ${rows.length} cases to evaluate.`);
+
+    let processedCount = 0;
+    const updates = [];
+
+    rows.forEach((row) => {
+        const decision = evaluatePolicy(row);
+        const now = new Date().toISOString();
+        const nowSec = Math.floor(Date.now() / 1000);
+        
+        let auditTrail = [];
+        try {
+            // handle if audit_trail is parsed or string
+            auditTrail = typeof row.audit_trail === 'string' ? JSON.parse(row.audit_trail) : (row.audit_trail || []);
+        } catch (e) { }
+
+        auditTrail.push({
+            timestamp: nowSec,
+            action: 'policy_evaluated',
+            details: `Decision: ${decision.action}. Reason: ${decision.reason}`
+        });
+
+        // Status transitions based on action
+        let newStatus = 'decided'; // Maps to old 'action_determined'
+        if (decision.action === 'stop' || decision.action === 'manual_review') {
+            newStatus = decision.action === 'stop' ? 'failed_to_recover' : 'requires_manual_review';
+        } else if (decision.action === 'wait') {
+            newStatus = 'diagnosed'; // Maps to old 'pending_policy_evaluation', will be evaluated again later
         }
 
-        if (rows.length === 0) {
-            console.log("No pending cases require policy evaluation.");
-            return;
-        }
-
-        console.log(`Found ${rows.length} cases to evaluate.`);
-
-        db.serialize(() => {
-            db.run("BEGIN TRANSACTION");
-
-            const updateStmt = db.prepare(`
-                UPDATE recovery_cases 
-                SET intervention_type = ?, status = ?, audit_trail = ?, updated_at = ?
-                WHERE id = ?
-            `);
-
-            let processedCount = 0;
-
-            rows.forEach((row) => {
-                const decision = evaluatePolicy(row);
-                const now = Math.floor(Date.now() / 1000);
-                
-                let auditTrail = [];
-                try {
-                    auditTrail = JSON.parse(row.audit_trail || '[]');
-                } catch (e) { }
-
-                auditTrail.push({
-                    timestamp: now,
-                    action: 'policy_evaluated',
-                    details: `Decision: ${decision.action}. Reason: ${decision.reason}`
-                });
-
-                // Status transitions based on action
-                let newStatus = 'action_determined';
-                if (decision.action === 'stop' || decision.action === 'manual_review') {
-                    newStatus = decision.action === 'stop' ? 'failed_to_recover' : 'requires_manual_review';
-                } else if (decision.action === 'wait') {
-                    newStatus = 'pending_policy_evaluation'; // Will be evaluated again later
-                }
-
-                updateStmt.run([
-                    decision.action,
-                    newStatus,
-                    JSON.stringify(auditTrail),
-                    now,
-                    row.id
-                ]);
-
-                processedCount++;
-            });
-
-            updateStmt.finalize();
-
-            db.run("COMMIT", (err) => {
-                if (err) {
-                    console.error("Transaction commit failed:", err.message);
-                } else {
-                    console.log(`✅ Successfully evaluated policy for ${processedCount} cases.`);
-                }
-            });
+        updates.push({
+            id: row.id,
+            intervention_type: decision.action,
+            status: newStatus,
+            audit_trail: auditTrail,
+            updated_at: now
         });
     });
+
+    // Supabase upsert/update multiple rows can be done with upsert by matching primary key.
+    // Since we are just updating, upsert with all updated fields is the most efficient.
+    // wait, we only want to update, not insert new ones, and we only fetched some fields? No, we fetched select('*') but only updating few fields might override missing fields to null if using upsert. 
+    // It's safer to do Promise.all over individual updates.
+    await Promise.all(updates.map(update => 
+        db.from('recovery_cases')
+          .update({
+              intervention_type: update.intervention_type,
+              status: update.status,
+              audit_trail: update.audit_trail,
+              updated_at: update.updated_at
+          })
+          .eq('id', update.id)
+    ));
+
+    processedCount = updates.length;
+    console.log(`✅ Successfully evaluated policy for ${processedCount} cases.`);
 }
 
 if (require.main === module) {
     processPolicyEvaluations();
-    setTimeout(() => {
-        db.close();
-    }, 2000);
 }
 
 module.exports = { evaluatePolicy, processPolicyEvaluations };

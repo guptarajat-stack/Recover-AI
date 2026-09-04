@@ -100,75 +100,68 @@ async function executeAction(caseData) {
 async function processExecutions() {
     console.log("⚡ Running Execution Layer on determined cases...");
 
-    db.all(`SELECT * FROM recovery_cases WHERE status = 'action_determined'`, [], async (err, rows) => {
-        if (err) {
-            console.error("Error fetching cases:", err.message);
-            return;
+    const { data: rows, error: fetchErr } = await db.from('recovery_cases').select('*').eq('status', 'decided');
+    
+    if (fetchErr) {
+        console.error("Error fetching cases:", fetchErr.message);
+        return;
+    }
+
+    if (!rows || rows.length === 0) {
+        console.log("No pending cases require execution.");
+        return;
+    }
+
+    console.log(`Found ${rows.length} cases to execute.`);
+
+    let processedCount = 0;
+
+    for (const row of rows) {
+        // Idempotency check: ensure we don't execute if already taken (guards against race conditions)
+        const { data: currentCase, error: checkErr } = await db.from('recovery_cases').select('status').eq('id', row.id).single();
+        const currentStatus = checkErr ? row.status : (currentCase ? currentCase.status : row.status);
+
+        if (currentStatus === 'executed' || currentStatus === 'recovered') {
+            console.log(`Skipping case ${row.id}: action already taken.`);
+            continue;
         }
 
-        if (rows.length === 0) {
-            console.log("No pending cases require execution.");
-            return;
-        }
+        console.log(`Processing case ${row.id} -> Action: ${row.intervention_type}`);
+        const executionResult = await executeAction(row);
+        
+        const now = new Date().toISOString();
+        const nowSec = Math.floor(Date.now() / 1000);
+        
+        let auditTrail = [];
+        try {
+            auditTrail = typeof row.audit_trail === 'string' ? JSON.parse(row.audit_trail) : (row.audit_trail || []);
+        } catch (e) {}
 
-        console.log(`Found ${rows.length} cases to execute.`);
+        auditTrail.push({
+            timestamp: nowSec,
+            action: 'intervention_executed',
+            details: executionResult.log
+        });
 
-        let processedCount = 0;
+        const newStatus = executionResult.success ? 'executed' : 'failed_to_recover';
+        const newAttempts = row.attempts + 1;
 
-        for (const row of rows) {
-            // Idempotency check: ensure we don't execute if already taken (guards against race conditions)
-            const currentStatus = await new Promise((resolve, reject) => {
-                db.get(`SELECT status FROM recovery_cases WHERE id = ?`, [row.id], (err, res) => {
-                    if (err) resolve(row.status);
-                    else resolve(res ? res.status : row.status);
-                });
-            });
+        // Update database
+        await db.from('recovery_cases').update({
+            status: newStatus,
+            audit_trail: auditTrail,
+            updated_at: now,
+            attempts: newAttempts
+        }).eq('id', row.id);
 
-            if (currentStatus === 'action_taken' || currentStatus === 'recovered') {
-                console.log(`Skipping case ${row.id}: action already taken.`);
-                continue;
-            }
+        processedCount++;
+    }
 
-            console.log(`Processing case ${row.id} -> Action: ${row.intervention_type}`);
-            const executionResult = await executeAction(row);
-            
-            const now = Math.floor(Date.now() / 1000);
-            
-            let auditTrail = [];
-            try {
-                auditTrail = JSON.parse(row.audit_trail || '[]');
-            } catch (e) {}
-
-            auditTrail.push({
-                timestamp: now,
-                action: 'intervention_executed',
-                details: executionResult.log
-            });
-
-            const newStatus = executionResult.success ? 'action_taken' : 'failed_to_execute';
-            const newAttempts = row.attempts + 1;
-
-            // Update database
-            await new Promise((resolve) => {
-                db.run(`
-                    UPDATE recovery_cases 
-                    SET status = ?, audit_trail = ?, updated_at = ?, attempts = ?
-                    WHERE id = ?
-                `, [newStatus, JSON.stringify(auditTrail), now, newAttempts, row.id], resolve);
-            });
-
-            processedCount++;
-        }
-
-        console.log(`✅ Successfully executed actions for ${processedCount} cases.`);
-    });
+    console.log(`✅ Successfully executed actions for ${processedCount} cases.`);
 }
 
 if (require.main === module) {
     processExecutions();
-    setTimeout(() => {
-        db.close();
-    }, 5000);
 }
 
 module.exports = { executeAction, processExecutions };

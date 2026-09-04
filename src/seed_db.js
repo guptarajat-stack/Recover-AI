@@ -14,21 +14,13 @@ const events = JSON.parse(fs.readFileSync(mockEventsPath, 'utf8'));
 
 console.log(`Read ${events.length} events from mock_events.json`);
 
-db.serialize(() => {
-    db.run("BEGIN TRANSACTION");
-
-    const insertStmt = db.prepare(`
-        INSERT INTO events (
-            id, razorpay_event_id, event_type, entity_id, amount, currency, 
-            customer_id, customer_contact, error_code, error_description, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `);
-
-    let count = 0;
+async function seedDatabase() {
+    const eventRows = [];
+    
     events.forEach(payload => {
         const id = uuidv4();
         const eventType = payload.event;
-        const createdAt = payload.created_at;
+        const createdAtISO = payload.created_at ? new Date(payload.created_at * 1000).toISOString() : new Date().toISOString();
         
         let entityId, amount, currency, customerId, customerContact, errorCode, errorDesc;
 
@@ -73,24 +65,31 @@ db.serialize(() => {
             errorDesc = 'Invoice is overdue';
         }
 
-        insertStmt.run([
-            id, null, eventType, entityId, amount, currency,
-            customerId, customerContact, errorCode, errorDesc, createdAt
-        ]);
-        count++;
+        eventRows.push({
+            id,
+            razorpay_event_id: null,
+            event_type: eventType,
+            entity_id: entityId,
+            amount: amount,
+            currency: currency,
+            customer_id: customerId,
+            customer_contact: customerContact,
+            error_code: errorCode,
+            error_description: errorDesc,
+            raw_payload: payload,
+            created_at: createdAtISO
+        });
     });
 
-    insertStmt.finalize();
+    const { error } = await db.from('events').insert(eventRows);
+    
+    if (error) {
+        console.error("Failed to seed database:", error.message);
+    } else {
+        console.log(`✅ Successfully seeded ${eventRows.length} events into the database.`);
+    }
+}
 
-    db.run("COMMIT", (err) => {
-        if (err) {
-            console.error("Failed to seed database:", err.message);
-        } else {
-            console.log(`✅ Successfully seeded ${count} events into the database.`);
-        }
-    });
-});
-
-setTimeout(() => {
-    db.close();
-}, 2000);
+if (require.main === module) {
+    seedDatabase();
+}

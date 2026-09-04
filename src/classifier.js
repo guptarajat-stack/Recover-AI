@@ -39,95 +39,79 @@ function classifyEvent(event) {
     return { bucket, confidence };
 }
 
-function processPendingEvents() {
+async function processPendingEvents() {
     console.log("🔍 Running Root-Cause Classifier on pending events...");
     
-    db.all(`SELECT * FROM events WHERE processed = 0`, [], (err, rows) => {
-        if (err) {
-            console.error("Error fetching pending events:", err.message);
-            return;
-        }
+    const { data: rows, error: fetchErr } = await db.from('events').select('*').eq('processed', false);
 
-        if (rows.length === 0) {
-            console.log("No pending events found.");
-            return;
-        }
+    if (fetchErr) {
+        console.error("Error fetching pending events:", fetchErr.message);
+        return;
+    }
 
-        console.log(`Found ${rows.length} pending events to classify.`);
+    if (!rows || rows.length === 0) {
+        console.log("No pending events found.");
+        return;
+    }
 
-        db.serialize(() => {
-            db.run("BEGIN TRANSACTION");
+    console.log(`Found ${rows.length} pending events to classify.`);
 
-            let processedCount = 0;
+    const caseRows = [];
+    const eventIdsToUpdate = [];
 
-            const insertStmt = db.prepare(`
-                INSERT INTO recovery_cases (
-                    id, event_id, root_cause_bucket, status, revenue_at_risk, 
-                    audit_trail, created_at, updated_at
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-            `);
+    rows.forEach((event) => {
+        const classification = classifyEvent(event);
+        const caseId = uuidv4();
+        const now = new Date().toISOString();
+        
+        const auditLog = [
+            { 
+                timestamp: Math.floor(Date.now() / 1000), 
+                action: 'event_ingested', 
+                details: `Event ${event.event_type} received` 
+            },
+            { 
+                timestamp: Math.floor(Date.now() / 1000), 
+                action: 'root_cause_classified', 
+                details: `Classified as ${classification.bucket} with ${Math.round(classification.confidence * 100)}% confidence` 
+            }
+        ];
 
-            const updateStmt = db.prepare(`UPDATE events SET processed = 1 WHERE id = ?`);
-
-            rows.forEach((event) => {
-                const classification = classifyEvent(event);
-                const caseId = uuidv4();
-                const now = Math.floor(Date.now() / 1000);
-                
-                const auditLog = [
-                    { 
-                        timestamp: now, 
-                        action: 'event_ingested', 
-                        details: `Event ${event.event_type} received` 
-                    },
-                    { 
-                        timestamp: now, 
-                        action: 'root_cause_classified', 
-                        details: `Classified as ${classification.bucket} with ${Math.round(classification.confidence * 100)}% confidence` 
-                    }
-                ];
-
-                insertStmt.run([
-                    caseId, 
-                    event.id, 
-                    classification.bucket, 
-                    'pending_policy_evaluation', 
-                    event.amount,
-                    JSON.stringify(auditLog),
-                    now, 
-                    now
-                ], function(err) {
-                    if (err) console.error(`Error creating recovery case for event ${event.id}:`, err.message);
-                });
-
-                updateStmt.run([event.id], function(err) {
-                    if (err) console.error(`Error updating event ${event.id}:`, err.message);
-                });
-
-                processedCount++;
-            });
-
-            insertStmt.finalize();
-            updateStmt.finalize();
-
-            db.run("COMMIT", (err) => {
-                if (err) {
-                    console.error("Transaction commit failed:", err.message);
-                } else {
-                    console.log(`✅ Successfully classified and created recovery cases for ${processedCount} events.`);
-                }
-            });
+        caseRows.push({
+            id: caseId,
+            event_id: event.id,
+            root_cause_bucket: classification.bucket,
+            status: 'diagnosed', // Updated to match Supabase ENUM
+            revenue_at_risk: event.amount,
+            classification_confidence: classification.confidence,
+            audit_trail: auditLog,
+            created_at: now,
+            updated_at: now
         });
+        
+        eventIdsToUpdate.push(event.id);
     });
+
+    const { error: insertErr } = await db.from('recovery_cases').insert(caseRows);
+    
+    if (insertErr) {
+        console.error("Error creating recovery cases:", insertErr.message);
+        return;
+    }
+
+    const { error: updateErr } = await db.from('events').update({ processed: true }).in('id', eventIdsToUpdate);
+
+    if (updateErr) {
+        console.error("Error updating events as processed:", updateErr.message);
+        return;
+    }
+
+    console.log(`✅ Successfully classified and created recovery cases for ${caseRows.length} events.`);
 }
 
 // If run directly, execute the classifier once
 if (require.main === module) {
     processPendingEvents();
-    // Allow some time for queries to finish before exiting
-    setTimeout(() => {
-        db.close();
-    }, 2000);
 }
 
 module.exports = { classifyEvent, processPendingEvents };

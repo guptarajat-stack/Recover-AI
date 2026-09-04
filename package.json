@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/guptarajat-stack/Recover-AI#readme",
   "dependencies": {
+    "@supabase/supabase-js": "^2.115.0",
     "body-parser": "^2.3.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
