@@ -117,3 +117,42 @@ DROP TRIGGER IF EXISTS on_event_created ON public.events;
 CREATE TRIGGER on_event_created
   AFTER INSERT ON public.events
   FOR EACH ROW EXECUTE PROCEDURE public.handle_new_event();
+
+-- Phase 5: Vector Search and Case Matching
+CREATE OR REPLACE FUNCTION match_cases (
+  query_embedding vector(1536),
+  match_threshold float,
+  match_count int
+)
+RETURNS TABLE (
+  case_id uuid,
+  event_type text,
+  root_cause_bucket root_cause_bucket,
+  intervention_type intervention_type,
+  status case_status,
+  raw_payload jsonb,
+  similarity float
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+  RETURN QUERY
+  SELECT
+    rc.id AS case_id,
+    e.event_type,
+    rc.root_cause_bucket,
+    rc.intervention_type,
+    rc.status,
+    e.raw_payload,
+    1 - (e.embedding <=> query_embedding) AS similarity
+  FROM events e
+  JOIN recovery_cases rc ON rc.event_id = e.id
+  WHERE 1 - (e.embedding <=> query_embedding) > match_threshold
+    AND rc.status IN ('recovered', 'failed_to_recover', 'executed')
+  ORDER BY e.embedding <=> query_embedding
+  LIMIT match_count;
+END;
+$$;
+
+-- Create an HNSW index for fast vector search on events
+CREATE INDEX IF NOT EXISTS events_embedding_idx ON events USING hnsw (embedding vector_cosine_ops);
